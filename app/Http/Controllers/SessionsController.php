@@ -6,6 +6,13 @@ use Illuminate\Http\Request;
 use Auth;
 class SessionsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('guest', [
+            'only' => ['create']
+        ]);
+    }
+
     //
     public function create()
     {
@@ -29,15 +36,13 @@ class SessionsController extends Controller
          *   3). 如果匹配后两个值不一致，则返回 false；
          *   如果用户未找到，则返回 false
          */
-        if (Auth::attempt($credentials,$request->has('remember'))) {
+        if (Auth::attempt($credentials, $request->has('remember'))) {
             session()->flash('success', '欢迎回来！');
-            return redirect()->route('users.show', [Auth::user()]);
+            return redirect()->intended(route('users.show', [Auth::user()]));
         } else {
             session()->flash('danger', '很抱歉，您的邮箱和密码不匹配');
             return redirect()->back();
         }
-
-        return;
     }
 
     public function destroy()
