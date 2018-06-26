@@ -55,8 +55,24 @@ class User extends Authenticatable
     }
 
 
+    //发送邮件密码
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPassword($token));
     }
+
+
+    //一个用户和多个微博
+    public function statuses()
+    {
+        return $this->hasMany(Status::class);
+    }
+
+    //关注人
+    public function feed()
+    {
+        return $this->statuses()
+            ->orderBy('created_at', 'desc');
+    }
+
 }
